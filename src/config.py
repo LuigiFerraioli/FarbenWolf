@@ -73,8 +73,8 @@ class FWConfig:
             "Datum": True,
             "Uhrzeit": False,
             "Arbeiten": [
-                "Verputzen",
                 "Streichen",
+                "Verputzen",
                 "Tapezieren",
                 "Bodenlegen",
                 "Lackieren",
