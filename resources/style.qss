@@ -1,0 +1,168 @@
+/* Allgemeine Fenster-Hintergrundfarbe */
+QWidget {
+    background-color: #f8f8f8;
+    font-family: Arial;
+    font-size: 11pt;
+    color: #222;
+}
+
+/* Labels */
+QLabel {
+    color: #222222;
+    font-size: 11pt;
+    font-weight: bold;
+    padding: 2px;
+}
+
+QLabel[heading="true"] {
+    font-size: 14pt;
+    font-weight: bold;
+    color: #BC0F00;
+}
+
+/* Tabs */
+QTabBar::tab {
+    font-weight: bold;
+    color: #BC0F00;
+    font-size: 14pt;
+    padding: 10px;
+    border-bottom: 2px solid transparent;
+}
+QTabBar::tab:selected {
+    border-bottom: 4px solid #BC0F00;
+    color: #BC0F00;
+}
+
+/* Eingabefelder */
+QLineEdit {
+    background-color: #f2f2f2;
+    border: 1px solid #bbb;
+    padding: 6px 8px;
+    border-radius: 3px;
+    font-size: 11pt;
+}
+QLineEdit:focus {
+    border: 1px solid #BC0F00;
+    background-color: #ffffff;
+}
+
+QLineEdit:disabled {
+    background-color: #d3d3d3;
+    color: #6d6d6d;             
+}
+
+/* Combobox */
+QComboBox {
+    background-color: #f2f2f2;
+    border: 1px solid #bbb;
+    padding: 4px 8px;
+    border-radius: 3px;
+}
+QComboBox QAbstractItemView {
+    background-color: white;
+    selection-background-color: #BC0F00;
+}
+
+/* Buttons */
+QPushButton {
+    background-color: #d3d3d3;
+    border: 1px solid #888;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-weight: bold; /* Schrift fett */
+}
+QPushButton:hover {
+    background-color: #c0c0c0;
+}
+QPushButton:pressed {
+    background-color: #a9a9a9;
+}
+
+/* Listen */
+QListWidget {
+    background-color: #ffffff;
+    border: 1px solid #bbb;
+    padding: 4px;
+}
+QListWidget::item:selected {
+    background-color: #BC0F00;
+    color: white;
+}
+
+/* Datei-Dialoge und MessageBoxen (teilweise Style-abhängig) */
+QFileDialog, QMessageBox {
+    font-size: 11pt;
+}
+    
+QGroupBox {
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin-top: 20px;
+    padding: 10px;
+    font-weight: bold;
+    font-size: 12pt;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top left;
+    padding: 0 15px;
+    margin-top: 9px;  /* Titel weiter nach unten schieben */
+}
+
+/* Textbereich (z.B. für Ausgaben oder Logs) */
+QTextEdit {
+    background-color: #ffffff;
+    border: 1px solid #bbb;
+    padding: 8px;
+    border-radius: 4px;
+    font-family: Consolas, monospace;
+    font-size: 10.5pt;
+    color: #333;
+}
+QTextEdit:focus {
+    border: 1px solid #BC0F00;
+    background-color: #fdfdfd;
+}
+
+/* QTableWidget – allgemeines Erscheinungsbild */
+QTableWidget {
+    background-color: #ffffff;
+    gridline-color: #ccc;
+    font-family: Arial;
+    font-size: 11pt;
+    border: 1px solid #bbb;
+    selection-background-color: #BC0F00;
+    selection-color: white;
+    alternate-background-color: #f9f9f9;
+}
+
+/* Abwechselnde Zeilenfarbe */
+QTableWidget::item {
+    padding: 10px;
+}
+
+/* Header – horizontale Tabellenüberschriften */
+QHeaderView::section {
+    background-color: #BC0F00;
+    color: white;
+    font-weight: bold;
+    padding: 8px;
+    border: 1px solid #bbb;
+}
+
+/* Tabellenzellen */
+QTableWidget::item:selected {
+    background-color: #BC0F00;
+    color: white;
+}
+
+/* Zeilenhöhe erhöhen */
+QTableView::item {
+    height: 30px;
+}
+
+/* Entfernt unnötigen Rahmen */
+QTableView {
+    border: none;
+}

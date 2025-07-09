@@ -1,0 +1,8 @@
+
+__pycache__/
+*.pdf
+*.xlsx
+
+# Ignore PyInstaller build folders
+dist/
+build/
