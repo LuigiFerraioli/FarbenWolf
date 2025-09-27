@@ -25,28 +25,18 @@ class ExcelHandler(IFileHandler):
             os.makedirs(self.output_path)
 
     def set_customer_data(self, data: dict):
-        translated = {
-            "Anrede": data.get("salutation", ""),
-            "Nachname": data.get("last_name", ""),
-            "Vorname": data.get("first_name", ""),
-            "Kunden-Straße": data.get("customer_street", ""),
-            "Kunden-Nr.": data.get("customer_number", ""),
-            "Kunden-Plz": data.get("customer_postal", ""),
-            "Kunden-Ort": data.get("customer_city", ""),
-            "Objekt-Straße": data.get("object_street", ""),
-            "Objekt-Nr.": data.get("object_number", ""),
-            "Objekt-Plz": data.get("object_postal", ""),
-            "Objekt-Ort": data.get("object_city", "")
-        }
-        self.customer_data = translated
+        """
+        Sets customer information for the PDF header.
+        """
+        self.customer_data = data
 
     def build_filename(self, customer_data: dict, base_name: str = "report") -> str:
         parts = []
 
         # Add name if requested
         if self.config.get("Name", False):
-            last_name = customer_data.get("last_name", "")
-            first_name = customer_data.get("first_name", "")
+            last_name = customer_data.get("Nachname", "")
+            first_name = customer_data.get("Vorname", "")
             name_part = f"{last_name}_{first_name}".strip("_")
             if name_part:
                 parts.append(name_part)

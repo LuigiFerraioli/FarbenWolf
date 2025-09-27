@@ -67,6 +67,23 @@ class CustomerBox(QGroupBox):
             "object_city": self.object_city.text()
         }
 
+    def get_translated_customer_data(self) -> dict:
+        """Returns the current customer input translated data as a dictionary."""
+        data = self.get_customer_data()
+        return {
+            "Anrede": data.get("salutation", ""),
+            "Nachname": data.get("last_name", ""),
+            "Vorname": data.get("first_name", ""),
+            "Kunden-Straße": data.get("customer_street", ""),
+            "Kunden-Nr.": data.get("customer_number", ""),
+            "Kunden-Plz": data.get("customer_postal", ""),
+            "Kunden-Ort": data.get("customer_city", ""),
+            "Objekt-Straße": data.get("object_street", ""),
+            "Objekt-Nr.": data.get("object_number", ""),
+            "Objekt-Plz": data.get("object_postal", ""),
+            "Objekt-Ort": data.get("object_city", "")
+        }
+
     def _init_ui(self):
         """Initialize the UI layout and widgets."""
         main_layout = QVBoxLayout()
@@ -103,6 +120,13 @@ class CustomerBox(QGroupBox):
             prefix="object_", main_label="Objektadresse"))
 
         self.setLayout(main_layout)
+
+    def clear_inputs(self):
+        """Clear all customer inputs"""
+        for widget in self.findChildren(QLineEdit):
+            widget.clear()
+        for widget in self.findChildren(QComboBox):
+            widget.setCurrentIndex(0)
 
     def _create_salutation_section(self) -> QVBoxLayout:
         """Create the salutation (title) input layout."""

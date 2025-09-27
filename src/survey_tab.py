@@ -62,7 +62,8 @@ class SurveyTab(QWidget):
             QMessageBox.information(self, "Kundendaten",
                                     "Der Nachname des Kunden muss angegeben werden (mindestens 3 Zeichen).")
             return False
-
+        customer_data = self.customerbox.get_translated_customer_data()
+        print(customer_data)
         # Check if at least one row with data exists
         first_row = self.df.iloc[0]
         wertefelder = ["Länge", "Breite", "Höhe1", "Höhe2"]
@@ -172,10 +173,11 @@ class SurveyTab(QWidget):
         if reply == QMessageBox.StandardButton.Yes:
             if self.generate_survey():
                 self.delete_actual_survey()
+                self.customerbox.clear_inputs()
 
         elif reply == QMessageBox.StandardButton.No:
             self.delete_actual_survey()
-
+            self.customerbox.clear_inputs()
         else:
             return
 
