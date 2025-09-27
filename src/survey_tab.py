@@ -12,6 +12,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon
 
 import pandas as pd
+import re
 
 from customer import CustomerBox
 from calculator import Calculator
@@ -472,23 +473,29 @@ class SurveyTab(QWidget):
     def _parse_number_or_raise(self, text: str, feldname: str) -> float:
         """
         Parses a string to float, replacing commas with dots.
+        Evaluates simple arithmetic expressions like 5+5, 3.5 + 7, 10.0-0.4.
 
         Raises:
             ValueError: If the string cannot be converted to a valid float.
 
         Parameters:
-            text (str): The string to parse.
+            text (str): The string to parse or evaluate.
             feldname (str): The name of the field for error messages.
 
         Returns:
-            float: The parsed number.
+            float: The parsed or evaluated number.
         """
         text = text.strip().replace(",", ".")
+        # Erlaubte Zeichen: Ziffern, Punkt, +, -, *, /, Klammern und Leerzeichen
+        error_text = \
+            f"Ungültige Eingabe für '{feldname}'. Bitte gib eine Zahl oder einfachen Ausdruck ein."
+        if not re.match(r"^[0-9\.\+\-\*\/\(\) ]+$", text):
+            raise ValueError(error_text)
         try:
-            return float(text)
-        except ValueError as exc:
-            raise ValueError(
-                f"Ungültige Eingabe für '{feldname}'. Bitte gib eine Zahl ein.") from exc
+            result = eval(text)
+            return float(result)
+        except Exception as exc:
+            raise ValueError(error_text) from exc
 
     def _set_placeholder_with_unit(self, field):
         field.setPlaceholderText(f"in {self.config.get('Einheit')}")
@@ -622,16 +629,19 @@ class SurveyTab(QWidget):
         button_layout = QHBoxLayout()
         button_layout.addStretch()
 
-        self.btn_import = QPushButton("Import")
-        self.btn_import.setFixedWidth(200)
+        self.btn_import = QPushButton(" Import")
+        self.btn_import.setIcon(QIcon.fromTheme("folder-new"))
+        self.btn_import.setFixedWidth(250)
         self.btn_import.clicked.connect(self.import_survey)
 
-        self.btn_gernerate_survey = QPushButton("Speichern")
-        self.btn_gernerate_survey.setFixedWidth(200)
+        self.btn_gernerate_survey = QPushButton(" Speichern")
+        self.btn_gernerate_survey.setIcon(QIcon.fromTheme("document-save"))
+        self.btn_gernerate_survey.setFixedWidth(250)
         self.btn_gernerate_survey.clicked.connect(self.generate_survey)
 
-        self.btn_new = QPushButton("Neues Aufmaß")
-        self.btn_new.setFixedWidth(200)
+        self.btn_new = QPushButton(" Neues Aufmaß")
+        self.btn_new.setIcon(QIcon.fromTheme("document-new"))
+        self.btn_new.setFixedWidth(250)
         self.btn_new.clicked.connect(self.new_survey)
 
         button_layout.addWidget(self.btn_import)

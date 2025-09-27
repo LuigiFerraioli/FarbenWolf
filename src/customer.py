@@ -7,6 +7,7 @@ from PyQt6.QtWidgets import (
     QGroupBox, QVBoxLayout, QHBoxLayout,
     QLabel, QLineEdit, QComboBox, QSizePolicy, QPushButton
 )
+from PyQt6.QtGui import QIcon
 
 import math
 
@@ -80,7 +81,8 @@ class CustomerBox(QGroupBox):
         spacer_label = QLabel(" ")
         button_layout.addWidget(spacer_label)
 
-        btn_copy = QPushButton("📋")
+        btn_copy = QPushButton()
+        btn_copy.setIcon(QIcon.fromTheme("edit-copy"))
         btn_copy.setToolTip("Kundenadresse kopieren")
         btn_copy.setFixedSize(40, 30)
         btn_copy.clicked.connect(self._copy_customer_adress)

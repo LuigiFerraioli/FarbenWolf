@@ -33,7 +33,7 @@ class FarbenWolfGui(QWidget):
         self.config = FWConfig()
         self.setWindowTitle("FarbenWolf Survey")
 
-        # set primaryScreen max WindowMode
+        # set primaryScreen max Windowmode
         screen = QApplication.primaryScreen()
         geometry: QRect = screen.availableGeometry()
         self.setGeometry(geometry)

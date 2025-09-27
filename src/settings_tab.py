@@ -11,6 +11,8 @@ from PyQt6.QtWidgets import (
     QFileDialog, QMessageBox, QCheckBox
 )
 
+from PyQt6.QtGui import QIcon
+
 
 class SettingsTab(QWidget):
     """
@@ -50,6 +52,7 @@ class SettingsTab(QWidget):
         options = ["Keine", "Name", "Datum", "Uhrzeit", "Name + Datum",
                    "Name + Uhrzeit", "Datum + Uhrzeit", "Name + Datum + Uhrzeit"]
         self.dateiname_combo.addItems(options)
+        self._set_dateiname_combo_from_config(self.config)
         layout.addWidget(self.dateiname_combo)
         layout.addSpacing(20)
 
@@ -63,7 +66,10 @@ class SettingsTab(QWidget):
         h_arbeit_add = QHBoxLayout()
         self.edit_neue_arbeit = QLineEdit()
         self.edit_neue_arbeit.setPlaceholderText("Neue Arbeit hinzufügen")
-        btn_arbeit_add = QPushButton("Hinzufügen")
+        btn_arbeit_add = QPushButton()
+        btn_arbeit_add.setIcon(QIcon.fromTheme("list-add"))
+        btn_arbeit_add.setToolTip("Hinzufügen")
+        btn_arbeit_add.setFixedWidth(100)
         btn_arbeit_add.clicked.connect(self._add_arbeit)
         h_arbeit_add.addWidget(self.edit_neue_arbeit)
         h_arbeit_add.addWidget(btn_arbeit_add)
@@ -105,14 +111,14 @@ class SettingsTab(QWidget):
         label_pdf_auto = QLabel("PDF automatisch öffnen")
         label_pdf_auto.setFixedWidth(200)
         h_pdf_auto.addWidget(label_pdf_auto)
-        self.btn_pdf_auto = QPushButton("Ein" if self.config.get(
-            "PDF automatisch öffnen", True) else "Aus")
+        self.btn_pdf_auto = QPushButton("✓" if self.config.get(
+            "PDF automatisch öffnen", True) else "✗")
         self.btn_pdf_auto.setCheckable(True)
         self.btn_pdf_auto.setChecked(
             self.config.get("PDF automatisch öffnen", True))
         self.btn_pdf_auto.setFixedWidth(200)
         self.btn_pdf_auto.toggled.connect(
-            lambda checked: self.btn_pdf_auto.setText("Ein" if checked else "Aus"))
+            lambda checked: self.btn_pdf_auto.setText("✓" if checked else "✗"))
         h_pdf_auto.addWidget(self.btn_pdf_auto)
         h_pdf_auto.addStretch()
         layout.addLayout(h_pdf_auto)
@@ -214,6 +220,23 @@ class SettingsTab(QWidget):
             QMessageBox.information(self, "Gespeichert",
                                     "Einstellungen wurden gespeichert.")
 
+    def _set_dateiname_combo_from_config(self, config: dict):
+        """Sets the filename components combo box based on the given config dictionary."""
+        name = config.get("Name", False)
+        datum = config.get("Datum", False)
+        uhrzeit = config.get("Uhrzeit", False)
+
+        selected = []
+        if name:
+            selected.append("Name")
+        if datum:
+            selected.append("Datum")
+        if uhrzeit:
+            selected.append("Uhrzeit")
+
+        current_text = " + ".join(selected) if selected else "Keine"
+        self.dateiname_combo.setCurrentText(current_text)
+
     def _reset_settings(self):
         """Reset config to defaults and save without notification."""
         self.config.reset_to_defaults()
@@ -224,4 +247,5 @@ class SettingsTab(QWidget):
             self.list_arbeiten.addItem(arbeit)
         self.combo_ausgabe.setCurrentText(defaults["Ausgabedokument"])
         self.combo_einheit.setCurrentText(defaults["Einheit"])
+        self._set_dateiname_combo_from_config(defaults)
         self._save_settings(notification=False)
