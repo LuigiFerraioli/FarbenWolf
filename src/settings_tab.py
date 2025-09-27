@@ -8,7 +8,7 @@ from pathlib import Path
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,
     QPushButton, QListWidget, QListWidgetItem, QComboBox,
-    QFileDialog, QMessageBox
+    QFileDialog, QMessageBox, QCheckBox
 )
 
 
@@ -29,15 +29,14 @@ class SettingsTab(QWidget):
         self._init_ui()
 
     def _init_ui(self):
-        """Initializes the UI components and layout."""
         layout = QVBoxLayout()
-        # Storage location input with browse button
+
+        # Speicherort
         h_speicherort = QHBoxLayout()
         h_speicherort.addWidget(QLabel("Speicherort"))
         self.edit_speicherort = QLineEdit()
-        self.edit_speicherort.setText(
-            self.config.get("Speicherort", str(Path.home() / "Desktop"))
-        )
+        self.edit_speicherort.setText(self.config.get(
+            "Speicherort", str(Path.home() / "Desktop")))
         h_speicherort.addWidget(self.edit_speicherort)
         btn_browse = QPushButton("...")
         btn_browse.clicked.connect(self._browse_speicherort)
@@ -45,53 +44,22 @@ class SettingsTab(QWidget):
         layout.addLayout(h_speicherort)
         layout.addSpacing(20)
 
-        self.dateiname_combo = QComboBox()
-        options = [
-            "Keine",
-            "Name",
-            "Datum",
-            "Uhrzeit",
-            "Name + Datum",
-            "Name + Uhrzeit",
-            "Datum + Uhrzeit",
-            "Name + Datum + Uhrzeit",
-        ]
-        self.dateiname_combo.addItems(options)
-
-        def get_current_option(config):
-            name = config.get("Name", True)
-            datum = config.get("Datum", True)
-            uhrzeit = config.get("Uhrzeit", True)
-
-            selected = []
-            if name:
-                selected.append("Name")
-            if datum:
-                selected.append("Datum")
-            if uhrzeit:
-                selected.append("Uhrzeit")
-
-            if not selected:
-                return "Keine"
-            return " + ".join(selected)
-
-        self.dateiname_combo.setCurrentText(get_current_option(self.config))
-
-        # Layout hinzufügen
+        # Dateinamensbestandteile
         layout.addWidget(QLabel("Dateinamensbestandteile"))
+        self.dateiname_combo = QComboBox()
+        options = ["Keine", "Name", "Datum", "Uhrzeit", "Name + Datum",
+                   "Name + Uhrzeit", "Datum + Uhrzeit", "Name + Datum + Uhrzeit"]
+        self.dateiname_combo.addItems(options)
         layout.addWidget(self.dateiname_combo)
-
-        self.setLayout(layout)
         layout.addSpacing(20)
 
-        # Job list label and QListWidget
+        # Arbeiten
         layout.addWidget(QLabel("Arbeiten (bearbeiten)"))
         self.list_arbeiten = QListWidget()
         self._load_arbeiten()
         layout.addWidget(self.list_arbeiten)
         layout.addSpacing(20)
 
-        # Add new job input and button
         h_arbeit_add = QHBoxLayout()
         self.edit_neue_arbeit = QLineEdit()
         self.edit_neue_arbeit.setPlaceholderText("Neue Arbeit hinzufügen")
@@ -103,25 +71,54 @@ class SettingsTab(QWidget):
         layout.addLayout(h_arbeit_add)
         layout.addSpacing(20)
 
-        # Output format and unit in one horizontal row
-        h_row = QHBoxLayout()
-        h_row.addWidget(QLabel("Ausgabedokument"))
+        # Ausgabedokument
+        h_ausgabe = QHBoxLayout()
+        label_ausgabe = QLabel("Ausgabedokument")
+        label_ausgabe.setFixedWidth(200)
+        h_ausgabe.addWidget(label_ausgabe)
         self.combo_ausgabe = QComboBox()
+        self.combo_ausgabe.setFixedWidth(200)
         self.combo_ausgabe.addItems(["pdf", "excel", "pdf & excel"])
         self.combo_ausgabe.setCurrentText(
             self.config.get("Ausgabedokument", "pdf"))
-        h_row.addWidget(self.combo_ausgabe)
-        h_row.addSpacing(20)
+        h_ausgabe.addWidget(self.combo_ausgabe)
+        h_ausgabe.addStretch()
+        layout.addLayout(h_ausgabe)
+        layout.addSpacing(10)
 
-        h_row.addWidget(QLabel("Einheit"))
+        # Einheit
+        h_einheit = QHBoxLayout()
+        label_einheit = QLabel("Einheit")
+        label_einheit.setFixedWidth(200)
+        h_einheit.addWidget(label_einheit)
         self.combo_einheit = QComboBox()
+        self.combo_einheit.setFixedWidth(200)
         self.combo_einheit.addItems(["m", "cm", "mm"])
         self.combo_einheit.setCurrentText(self.config.get("Einheit", "m"))
-        h_row.addWidget(self.combo_einheit)
-        layout.addLayout(h_row)
+        h_einheit.addWidget(self.combo_einheit)
+        h_einheit.addStretch()
+        layout.addLayout(h_einheit)
+        layout.addSpacing(10)
+
+        # PDF automatisch öffnen
+        h_pdf_auto = QHBoxLayout()
+        label_pdf_auto = QLabel("PDF automatisch öffnen")
+        label_pdf_auto.setFixedWidth(200)
+        h_pdf_auto.addWidget(label_pdf_auto)
+        self.btn_pdf_auto = QPushButton("Ein" if self.config.get(
+            "PDF automatisch öffnen", True) else "Aus")
+        self.btn_pdf_auto.setCheckable(True)
+        self.btn_pdf_auto.setChecked(
+            self.config.get("PDF automatisch öffnen", True))
+        self.btn_pdf_auto.setFixedWidth(200)
+        self.btn_pdf_auto.toggled.connect(
+            lambda checked: self.btn_pdf_auto.setText("Ein" if checked else "Aus"))
+        h_pdf_auto.addWidget(self.btn_pdf_auto)
+        h_pdf_auto.addStretch()
+        layout.addLayout(h_pdf_auto)
+        layout.addSpacing(20)
 
         # Buttons
-        layout.addStretch()
         btn_save = QPushButton("Speichern")
         btn_save.setFixedWidth(200)
         btn_save.clicked.connect(lambda: self._save_settings(True))
@@ -134,8 +131,9 @@ class SettingsTab(QWidget):
         btn_layout.addSpacing(20)
         btn_layout.addWidget(btn_reset)
         btn_layout.addStretch()
-
         layout.addLayout(btn_layout)
+
+        # Layout setzen **nur einmal**
         self.setLayout(layout)
 
     def save_settings(self, notification=True):
@@ -201,6 +199,8 @@ class SettingsTab(QWidget):
         ]
         self.config.update("Arbeiten", arbeiten)
         self.config.update("Ausgabedokument", self.combo_ausgabe.currentText())
+        self.config.update("PDF automatisch öffnen",
+                           self.btn_pdf_auto.isChecked())
         self.config.update("Einheit", self.combo_einheit.currentText())
 
         selected_text = self.dateiname_combo.currentText()

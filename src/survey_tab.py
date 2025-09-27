@@ -60,7 +60,7 @@ class SurveyTab(QWidget):
         if len(customer_data.get("last_name", "").strip()) < 2:
             QMessageBox.information(self, "Kundendaten",
                                     "Der Nachname des Kunden muss angegeben werden (mindestens 3 Zeichen).")
-            return
+            return False
 
         # Check if at least one row with data exists
         first_row = self.df.iloc[0]
@@ -80,7 +80,7 @@ class SurveyTab(QWidget):
                 "Ungültiger Eintrag",
                 "Mindestens eines der Felder Länge, Breite, Höhe1 oder Höhe2 muss einen Wert enthalten."
             )
-            return
+            return False
 
         # Remove the empty row
         result_df = self.df
@@ -116,6 +116,7 @@ class SurveyTab(QWidget):
 
         QMessageBox.information(self, "Export",
                                 f"Das Ergebnis wurde als {document_type} exportiert.")
+        return True
 
     def import_survey(self):
         """
@@ -125,7 +126,7 @@ class SurveyTab(QWidget):
         file_path, _ = QFileDialog.getOpenFileName(
             self,
             "Select Excel File",
-            "",
+            self.config.get("Speicherort", "."),
             "Excel Files (*.xlsx *.xls);;All Files (*)"
         )
 
@@ -147,14 +148,35 @@ class SurveyTab(QWidget):
                     self.update_pos_items()
                 else:
                     QMessageBox.warning(
-                        self, "Error", "The selected file could not be loaded or is corrupted."
+                        self, "Error", "Die ausgewählte Datei konnte nicht geladen werden oder ist beschädigt."
                     )
 
             except Exception as e:
                 QMessageBox.warning(
-                    self, "Error", f"Failed to load Excel file:\n{e}")
+                    self, "Error", f"Fehler beim Laden der Exceldatei:\n{e}")
         else:
-            QMessageBox.information(self, "Import", "No file was selected.")
+            QMessageBox.information(self, "Import", "Keine Datei ausgewählt.")
+
+    def new_survey(self):
+        """
+        Ask the user if the current survey should be saved before starting a new one.
+        """
+        reply = QMessageBox.question(
+            self,
+            "Neues Aufmaß",
+            "Möchten Sie das aktuelle Aufmaß speichern, bevor ein neues erstellt wird?",
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No | QMessageBox.StandardButton.Cancel
+        )
+
+        if reply == QMessageBox.StandardButton.Yes:
+            if self.generate_survey():
+                self.delete_actual_survey()
+
+        elif reply == QMessageBox.StandardButton.No:
+            self.delete_actual_survey()
+
+        else:
+            return
 
     def handle_add_entry(self):
         """
@@ -275,6 +297,21 @@ class SurveyTab(QWidget):
         self.df = pd.concat(
             [self.df, empty_row.to_frame().T], ignore_index=True)
 
+        self.update_table_area()
+        self.update_pos_items()
+
+    def delete_actual_survey(self):
+        """
+        Clears the entire survey, keeping only the column headers.
+        Resets the table and position items.
+        """
+        self.df = pd.DataFrame(columns=self.table_columns)
+        empty_row = pd.Series(
+            [""] * len(self.table_columns), index=self.table_columns)
+        self.df = pd.concat(
+            [self.df, empty_row.to_frame().T], ignore_index=True)
+
+        # UI aktualisieren
         self.update_table_area()
         self.update_pos_items()
 
@@ -589,13 +626,19 @@ class SurveyTab(QWidget):
         self.btn_import.setFixedWidth(200)
         self.btn_import.clicked.connect(self.import_survey)
 
-        self.btn_gernerate_survey = QPushButton("Aufmaß erstellen")
+        self.btn_gernerate_survey = QPushButton("Speichern")
         self.btn_gernerate_survey.setFixedWidth(200)
         self.btn_gernerate_survey.clicked.connect(self.generate_survey)
 
+        self.btn_new = QPushButton("Neues Aufmaß")
+        self.btn_new.setFixedWidth(200)
+        self.btn_new.clicked.connect(self.new_survey)
+
         button_layout.addWidget(self.btn_import)
-        button_layout.addSpacing(20)
+        button_layout.addSpacing(1)
         button_layout.addWidget(self.btn_gernerate_survey)
+        button_layout.addStretch(1)
+        button_layout.addWidget(self.btn_new)
         button_layout.addStretch()
 
         layout.addLayout(button_layout)

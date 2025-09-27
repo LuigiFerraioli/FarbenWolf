@@ -29,12 +29,15 @@ class ExcelHandler(IFileHandler):
             "Anrede": data.get("salutation", ""),
             "Nachname": data.get("last_name", ""),
             "Vorname": data.get("first_name", ""),
-            "Straße": data.get("street", ""),
-            "Hausnummer": data.get("number", ""),
-            "PLZ": data.get("postal_code", ""),
-            "Ort": data.get("city", "")
+            "Kunden-Straße": data.get("customer_street", ""),
+            "Kunden-Nr.": data.get("customer_number", ""),
+            "Kunden-Plz": data.get("customer_postal", ""),
+            "Kunden-Ort": data.get("customer_city", ""),
+            "Objekt-Straße": data.get("object_street", ""),
+            "Objekt-Nr.": data.get("object_number", ""),
+            "Objekt-Plz": data.get("object_postal", ""),
+            "Objekt-Ort": data.get("object_city", "")
         }
-
         self.customer_data = translated
 
     def build_filename(self, customer_data: dict, base_name: str = "report") -> str:
