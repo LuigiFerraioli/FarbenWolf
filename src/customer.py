@@ -46,7 +46,7 @@ class CustomerBox(QGroupBox):
         self.customer_city.setText(safe_get("Kunden-Ort"))
 
         # Object Address
-        self.object_street.setText(safe_get("Objekt-straße"))
+        self.object_street.setText(safe_get("Objekt-Straße"))
         self.object_number.setText(safe_get("Objekt-Nr."))
         self.object_postal.setText(safe_get("Objekt-Plz"))
         self.object_city.setText(safe_get("Objekt-Ort"))
