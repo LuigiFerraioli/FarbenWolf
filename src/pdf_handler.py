@@ -35,7 +35,7 @@ class PdfHandler(IFileHandler):
         self.base_dir = os.path.abspath(
             os.path.join(os.path.dirname(__file__), ".."))
         self.logo_path = resource_path(os.path.join(
-            "resources", "FarbenWolfLogoTransparent.png"), self.base_dir)
+            "resources", "LogoTransparent.png"), self.base_dir)
         self.customer_data = {}
 
         if not os.path.exists(self.output_path):

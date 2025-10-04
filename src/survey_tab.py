@@ -63,7 +63,6 @@ class SurveyTab(QWidget):
                                     "Der Nachname des Kunden muss angegeben werden (mindestens 3 Zeichen).")
             return False
         customer_data = self.customerbox.get_translated_customer_data()
-        print(customer_data)
         # Check if at least one row with data exists
         first_row = self.df.iloc[0]
         wertefelder = ["Länge", "Breite", "Höhe1", "Höhe2"]

@@ -44,13 +44,13 @@ class FarbenWolfGui(QWidget):
 
         # Set window icon
         icon_path = resource_path(
-            "resources/FarbenWolfIcon.png", self.base_dir)
+            "resources/LogoIcon.png", self.base_dir)
         self.setWindowIcon(QIcon(icon_path))
 
         # Display logo at the top
         logo_label = QLabel()
         logo_path = resource_path(os.path.join(
-            "resources", "FarbenWolfLogoTransparent.png"), self.base_dir)
+            "resources", "LogoTransparent.png"), self.base_dir)
         logo_pixmap = QPixmap(logo_path)
         logo_label.setPixmap(logo_pixmap.scaledToHeight(
             60, Qt.TransformationMode.SmoothTransformation))

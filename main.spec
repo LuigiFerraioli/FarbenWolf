@@ -3,9 +3,9 @@ import os
 from PyInstaller.utils.hooks import collect_data_files
 
 datas = [
-    ("resources/FarbenWolfIcon.ico", "resources"),
-    ("resources/FarbenWolfIcon.png", "resources"),
-    ("resources/FarbenWolfLogoTransparent.png", "resources"),
+    ("resources/LogoIcon.ico", "resources"),
+    ("resources/LogoIcon.png", "resources"),
+    ("resources/LogoTransparent.png", "resources"),
     ("resources/style.qss", "resources"),
 ]
 
@@ -39,5 +39,5 @@ exe = EXE(
     upx=True,
     runtime_tmpdir=None,
     console=False,
-    icon='resources/FarbenWolfIcon.ico'
+    icon='resources/LogoIcon.ico'
 )
