@@ -1,4 +1,4 @@
-<img src="resources/FarbenWolfLogoTransparent.png" alt="Logo" width="400"/>
+<img src="resources/LogoTransparent.png" alt="Logo" width="400"/>
 
 
 ## Übersicht
