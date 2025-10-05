@@ -68,6 +68,7 @@ class FWConfig:
         return {
             "Einheit": "m",
             "Ausgabedokument": "pdf",
+            "PDF automatisch öffnen": True,
             "Speicherort": str(Path.home() / "Desktop"),
             "Name": True,
             "Datum": True,

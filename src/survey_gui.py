@@ -6,9 +6,9 @@ Copyright: © 2025 Luigi Ferraioli
 import os
 
 from PyQt6.QtWidgets import (
-    QWidget, QTabWidget, QVBoxLayout, QLabel)
+    QWidget, QTabWidget, QVBoxLayout, QLabel, QApplication)
 
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QRect
 from PyQt6.QtGui import QPixmap, QIcon
 
 from config import FWConfig
@@ -32,19 +32,25 @@ class FarbenWolfGui(QWidget):
         super().__init__()
         self.config = FWConfig()
         self.setWindowTitle("FarbenWolf Survey")
-        self.resize(1200, 1200)
+
+        # set primaryScreen max Windowmode
+        screen = QApplication.primaryScreen()
+        geometry: QRect = screen.availableGeometry()
+        self.setGeometry(geometry)
+        self.showMaximized()
+
         self.base_dir = os.path.abspath(
             os.path.join(os.path.dirname(__file__), ".."))
 
         # Set window icon
         icon_path = resource_path(
-            "resources/FarbenWolfIcon.png", self.base_dir)
+            "resources/LogoIcon.png", self.base_dir)
         self.setWindowIcon(QIcon(icon_path))
 
         # Display logo at the top
         logo_label = QLabel()
         logo_path = resource_path(os.path.join(
-            "resources", "FarbenWolfLogoTransparent.png"), self.base_dir)
+            "resources", "LogoTransparent.png"), self.base_dir)
         logo_pixmap = QPixmap(logo_path)
         logo_label.setPixmap(logo_pixmap.scaledToHeight(
             60, Qt.TransformationMode.SmoothTransformation))

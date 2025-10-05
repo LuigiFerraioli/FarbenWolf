@@ -43,11 +43,18 @@ Erstelle die ausführbare Datei mit PyInstaller und der vorhandenen `main.spec`:
 ```bash
 python -m PyInstaller --clean main.spec
 ```
+
 <br>
+
+#### Anpassen des Logos
+Um das Logo zu ändern, ersetzen Sie die Dateien `LogoIcon.ico`, `LogoIcon.png` und `LogoTransparent.png` durch eigene Bilder mit identischem Dateinamen.
+
 
 ---
 
-### Die Anwendung
+<br>
+
+## Die Anwendung
 
 ![App Screenshot](resources/FarbenWolfApp.png)
 
@@ -56,12 +63,12 @@ Eine grafische Vorschau unterstützt die visuelle Kontrolle der eingegebenen Wer
 
 #### Hauptfunktionen:
 
-- Eingabe und Verwaltung von Kundendaten  
-- Hinzufügen und Bearbeiten beliebiger Flächen  
-- Automatische Flächenberechnung basierend auf den Eingaben  
-- Visuelle Darstellung der Flächen zur Plausibilitätskontrolle  
+- Eingabe und Verwaltung von Kundendaten
+- Auswahl der ausgeführten Arbeit
+- Automatische Flächenberechnung basierend auf der Auswahl der Flächenart  
+- Möglichkeit zur visuelle Darstellung der Flächen zur Plausibilitätskontrolle  
 - Export der Ergebnisse in Excel- und/oder PDF-Format  
-- Import und Re-Import bereits vorhandener Excel-Dateien zur weiteren Bearbeitung
+- Re-Import bereits vorhandener Excel-Dateien zur weiteren Bearbeitung
 
 
 ### Einstellungen
@@ -74,5 +81,7 @@ In den Einstellungen können wichtige Voreinstellungen getroffen werden:
 - Auswahl der Namensgebung beim Speichervorgang  
 - Auswahl des Ausgabeformats (z. B. Excel, PDF)  
 - Auswahl der Maßeinheit (z. B. Meter oder Zentimeter)
+- Auswahl der automatischen Bereitstellung der PDF nach dem Speichervorgang (Ja/Nein)
 
 Zusätzlich können Arbeiten beliebig hinzugefügt werden. Diese dienen – wie auch die Bemerkungen – als Unterstützung während der Dateneingabe und sind nicht verpflichtend.
+

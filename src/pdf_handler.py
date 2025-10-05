@@ -5,6 +5,7 @@ Copyright: © 2025 Luigi Ferraioli
 
 import os
 import sys
+import subprocess
 from datetime import datetime
 import pandas as pd
 from reportlab.lib import colors
@@ -34,7 +35,7 @@ class PdfHandler(IFileHandler):
         self.base_dir = os.path.abspath(
             os.path.join(os.path.dirname(__file__), ".."))
         self.logo_path = resource_path(os.path.join(
-            "resources", "FarbenWolfLogoTransparent.png"), self.base_dir)
+            "resources", "LogoTransparent.png"), self.base_dir)
         self.customer_data = {}
 
         if not os.path.exists(self.output_path):
@@ -43,21 +44,8 @@ class PdfHandler(IFileHandler):
     def set_customer_data(self, data: dict):
         """
         Sets customer information for the PDF header.
-
-        Args:
-            data (dict): Dictionary containing customer fields like name, address etc.
-                         Example: {"Name": "Max Mustermann", "Adresse": "Musterstraße 1", ...}
         """
-        translated = {
-            "Anrede": data.get("salutation", ""),
-            "Nachname": data.get("last_name", ""),
-            "Vorname": data.get("first_name", ""),
-            "Straße": data.get("street", ""),
-            "Hausnummer": data.get("number", ""),
-            "PLZ": data.get("postal_code", ""),
-            "Ort": data.get("city", "")
-        }
-        self.customer_data = translated
+        self.customer_data = data
 
     def create_file(self, df: pd.DataFrame, filename: str = "bericht.pdf"):
         """
@@ -73,29 +61,52 @@ class PdfHandler(IFileHandler):
         styles = getSampleStyleSheet()
         elements = []
 
-        # Logo (kleiner und oben rechts)
+        # Logo
         logo_width = 150
         logo_height = 50
         logo = None
         if os.path.exists(self.logo_path):
             logo = Image(self.logo_path, width=logo_width, height=logo_height)
 
-        # Kundendaten als Paragraph links
-        customer_paragraph = None
+        # Kundendaten in drei Spalten
         if self.customer_data:
-            customer_lines = []
-            for key, value in self.customer_data.items():
-                customer_lines.append(f"<b>{key}:</b> {value}")
-            customer_paragraph = Paragraph(
-                "<br/>".join(customer_lines), styles["Normal"])
+            customer_lines = list(self.customer_data.items())
 
-        # Kopfbereich als Tabelle: links Kundendaten, rechts Logo
-        if customer_paragraph and logo:
-            header_table = Table(
-                [[customer_paragraph, logo]],
-                colWidths=[doc.width - logo_width - 10, logo_width + 10]
-            )
-            header_table.setStyle(TableStyle([
+            # Aufteilung: 3 + 4 + 4 Zeilen
+            col1 = customer_lines[:3]
+            col2 = customer_lines[3:7]
+            col3 = customer_lines[7:11]
+
+            def make_paragraphs(lines):
+                return [Paragraph(f"<b>{k}:</b> {v}", styles["Normal"]) for k, v in lines]
+
+            col1_par = make_paragraphs(col1)
+            col2_par = make_paragraphs(col2)
+            col3_par = make_paragraphs(col3)
+
+            # Spalten auf gleiche Länge bringen
+            max_len = max(len(col1_par), len(col2_par), len(col3_par))
+            for col in (col1_par, col2_par, col3_par):
+                while len(col) < max_len:
+                    col.append(Paragraph("", styles["Normal"]))
+
+            # Tabelle mit drei Spalten
+            customer_table_data = list(zip(col1_par, col2_par, col3_par))
+            customer_table = Table(customer_table_data)
+            customer_table.setStyle(TableStyle([
+                ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+                ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+                ('LEFTPADDING', (0, 0), (-1, -1), 2),
+                ('RIGHTPADDING', (0, 0), (-1, -1), 2),
+                ('TOPPADDING', (0, 0), (-1, -1), 2),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 2),
+            ]))
+
+            # Äußere Tabelle: links Kundendaten, rechts Logo
+            outer_table_data = [[customer_table, logo if logo else ""]]
+            outer_table = Table(outer_table_data, colWidths=[
+                                doc.width - logo_width - 10, logo_width + 10])
+            outer_table.setStyle(TableStyle([
                 ('VALIGN', (0, 0), (-1, -1), 'TOP'),
                 ('ALIGN', (1, 0), (1, 0), 'RIGHT'),
                 ('LEFTPADDING', (0, 0), (-1, -1), 0),
@@ -104,19 +115,14 @@ class PdfHandler(IFileHandler):
                 ('BOTTOMPADDING', (0, 0), (-1, -1), 0),
             ]))
 
-            elements.append(header_table)
-        elif customer_paragraph:
-            elements.append(customer_paragraph)
-        elif logo:
-            elements.append(logo)
+            elements.append(outer_table)
 
         elements.append(Spacer(1, 15))
 
         # Tabelle mit Daten
-        df = self. append_units(df)
+        df = self.append_units(df)
         table_data = [list(df.columns)] + df.astype(str).values.tolist()
         table = Table(table_data, repeatRows=1)
-
         table.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#cccccc")),
             ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
@@ -127,7 +133,31 @@ class PdfHandler(IFileHandler):
             ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
         ]))
         elements.append(table)
+
         doc.build(elements)
+
+        if self.config.get("PDF automatisch öffnen", True):
+            self.open_pdf(file_path)
+
+    def open_pdf(self, file_path):
+        """
+        Opens a PDF file using the default system application.
+
+        Supports Windows, macOS, and Linux. If the file cannot be opened,
+        an error message is printed to the console.
+
+        Args:
+            file_path (str): The full path to the PDF file to open.
+        """
+        try:
+            if sys.platform.startswith("win"):
+                os.startfile(file_path)  # Windows
+            elif sys.platform.startswith("darwin"):
+                subprocess.run(["open", file_path])  # macOS
+            else:
+                subprocess.run(["xdg-open", file_path])  # Linux
+        except Exception as e:
+            print(f"Fehler beim Öffnen der PDF: {e}")
 
     def append_units(self, df: pd.DataFrame) -> pd.DataFrame:
         """
@@ -172,8 +202,8 @@ class PdfHandler(IFileHandler):
 
         # Name hinzufügen, wenn gewünscht
         if self.config.get("Name", False):
-            last_name = customer_data.get("last_name", "")
-            first_name = customer_data.get("first_name", "")
+            last_name = customer_data.get("Nachname", "")
+            first_name = customer_data.get("Vorname", "")
             name_part = f"{last_name}_{first_name}".strip("_")
             if name_part:
                 parts.append(name_part)
