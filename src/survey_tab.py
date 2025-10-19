@@ -89,7 +89,8 @@ class SurveyTab(QWidget):
         Saves the file using the current configuration and customer data.
 
         The file is generated and saved to the default or previously configured save path.
-        If no path is set, the method may use a default location or handle path selection internally.
+        If no path is set, the method may use a default location or handle path 
+        selection internally.
 
         Raises:
             RuntimeError: If the file cannot be saved due to missing configuration or invalid path.
@@ -111,7 +112,6 @@ class SurveyTab(QWidget):
             "Select Folder to Save File",
             self.config.get("Speicherort", ".")
         )
-
         if not folder_path:
             return
 
@@ -758,5 +758,4 @@ class SurveyTab(QWidget):
                 excel_handler.set_save_path(path_to_save)
             excel_handler.set_customer_data(customer_data)
             handlers.append(excel_handler)
-
         return handlers

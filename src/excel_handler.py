@@ -196,4 +196,4 @@ class ExcelHandler(IFileHandler):
     def set_save_path(self, path: str) -> None:
         if not os.path.isdir(path):
             raise ValueError(f"Invalid directory: {path}")
-        self.save_path = path
+        self.output_path = path
