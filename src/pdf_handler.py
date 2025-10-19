@@ -42,9 +42,6 @@ class PdfHandler(IFileHandler):
             os.makedirs(self.output_path)
 
     def set_customer_data(self, data: dict):
-        """
-        Sets customer information for the PDF header.
-        """
         self.customer_data = data
 
     def create_file(self, df: pd.DataFrame, filename: str = "bericht.pdf"):
@@ -160,17 +157,6 @@ class PdfHandler(IFileHandler):
             print(f"Fehler beim Öffnen der PDF: {e}")
 
     def append_units(self, df: pd.DataFrame) -> pd.DataFrame:
-        """
-        Appends units to column headers for specific columns:
-        - 'Länge', 'Breite', 'Höhe1', 'Höhe2' → adds unit (e.g., "Länge [m]")
-        - 'Ergebnis' → adds squared unit (e.g., "Ergebnis [m²]")
-
-        Args:
-            df (pd.DataFrame): Input DataFrame
-
-        Returns:
-            pd.DataFrame: A copy of the input DataFrame with updated column headers.
-        """
         df = df.copy()
         einheit = self.config.get("Einheit", "")
 
@@ -188,19 +174,9 @@ class PdfHandler(IFileHandler):
         return df
 
     def build_filename(self, customer_data: dict, base_name: str = "bericht") -> str:
-        """
-        Builds the filename based on configuration flags and customer data.
-
-        Args:
-            customer_data (dict): Customer data, e.g., 'last_name', 'first_name'
-            base_name (str): Fallback name if no specific name is requested
-
-        Returns:
-            str: Constructed filename with .xlsx extension
-        """
         parts = []
 
-        # Name hinzufügen, wenn gewünscht
+        # Add name if requested
         if self.config.get("Name", False):
             last_name = customer_data.get("Nachname", "")
             first_name = customer_data.get("Vorname", "")
@@ -208,12 +184,12 @@ class PdfHandler(IFileHandler):
             if name_part:
                 parts.append(name_part)
 
-        # Datum hinzufügen, wenn gewünscht
+        # Add date if requested
         if self.config.get("Datum", False):
             date_str = datetime.now().strftime("%Y-%m-%d")
             parts.append(date_str)
 
-        # Uhrzeit hinzufügen, wenn gewünscht
+        # Add time if requested
         if self.config.get("Uhrzeit", False):
             time_str = datetime.now().strftime("%H-%M-%S")
             parts.append(time_str)
@@ -223,3 +199,8 @@ class PdfHandler(IFileHandler):
 
         filename = "_".join(parts) + ".pdf"
         return filename
+
+    def set_save_path(self, path: str) -> None:
+        if not os.path.isdir(path):
+            raise ValueError(f"Invalid directory: {path}")
+        self.save_path = path

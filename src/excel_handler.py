@@ -25,9 +25,6 @@ class ExcelHandler(IFileHandler):
             os.makedirs(self.output_path)
 
     def set_customer_data(self, data: dict):
-        """
-        Sets customer information for the PDF header.
-        """
         self.customer_data = data
 
     def build_filename(self, customer_data: dict, base_name: str = "report") -> str:
@@ -76,17 +73,6 @@ class ExcelHandler(IFileHandler):
         self._adjust_rows_and_columns(file_path, sheet_name="Daten")
 
     def append_units(self, df: pd.DataFrame) -> pd.DataFrame:
-        """
-        Appends units to column headers for specific columns:
-        - 'Länge', 'Breite', 'Höhe1', 'Höhe2' → adds unit (e.g., "Länge [m]")
-        - 'Ergebnis' → adds squared unit (e.g., "Ergebnis [m²]")
-
-        Args:
-            df (pd.DataFrame): Input DataFrame
-
-        Returns:
-            pd.DataFrame: A copy of the input DataFrame with updated column headers.
-        """
         df = df.copy()
         einheit = self.config.get("Einheit", "")
 
@@ -206,3 +192,8 @@ class ExcelHandler(IFileHandler):
                 col_width, max_length + 2)
 
         wb.save(file_path)
+
+    def set_save_path(self, path: str) -> None:
+        if not os.path.isdir(path):
+            raise ValueError(f"Invalid directory: {path}")
+        self.save_path = path
