@@ -23,8 +23,14 @@ Das Programm läuft mit Python 3.10 oder höher und kann unter Windows installie
 1. Öffne die Eingabeaufforderung (CMD) im Projektverzeichnis.
 2. Führe die Datei `install.bat` aus, indem du den Befehl eingibst:
 
+Erstellt eine Anwendung und einen _internal-Ordner (schnellere Ausführung)
 ```bash
-install.bat
+install.bat onedir
+```
+
+Erstellt eine ausführbare Anwendung
+```bash
+install.bat onefile
 ```
 
 3. Dies installiert automatisch alle benötigten Python-Pakete.
