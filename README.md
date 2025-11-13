@@ -25,14 +25,8 @@ Das Programm läuft mit Python 3.10 oder höher und kann unter Windows installie
 
 Erstellt eine Anwendung und einen _internal-Ordner (schnellere Ausführung)
 ```bash
-install.bat onedir
+install.bat
 ```
-
-Erstellt eine ausführbare Anwendung
-```bash
-install.bat onefile
-```
-
 3. Dies installiert automatisch alle benötigten Python-Pakete.
 
 ### Variante 2: Manuelle Installation
