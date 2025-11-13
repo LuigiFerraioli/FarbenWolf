@@ -1,11 +1,19 @@
 # -*- mode: python ; coding: utf-8 -*-
+import os
+from PyInstaller.utils.hooks import collect_data_files
 
+datas = [
+    ("resources/LogoIcon.ico", "resources"),
+    ("resources/LogoIcon.png", "resources"),
+    ("resources/LogoTransparent.png", "resources"),
+    ("resources/style.qss", "resources"),
+]
 
 a = Analysis(
     ['src\\main.py'],
-    pathex=[],
+    pathex=[os.path.abspath("src")],
     binaries=[],
-    datas=[],
+    datas=datas,
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -32,6 +40,7 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    icon='resources/LogoIcon.ico'
 )
 coll = COLLECT(
     exe,
@@ -41,4 +50,5 @@ coll = COLLECT(
     upx=True,
     upx_exclude=[],
     name='FarbenWolf',
+    icon='resources/LogoIcon.ico'
 )

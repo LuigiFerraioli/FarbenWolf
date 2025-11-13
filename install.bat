@@ -2,17 +2,6 @@
 setlocal
 
 REM -------------------------------
-REM Standard-Konfiguration
-REM -------------------------------
-set ONEDIR=0  REM Default: Onefile
-
-REM -------------------------------
-REM Argument prüfen
-REM -------------------------------
-if /i "%1%"=="onedir" set ONEDIR=1
-if /i "%1%"=="onefile" set ONEDIR=0
-
-REM -------------------------------
 REM Prüfe, ob Python installiert ist
 REM -------------------------------
 where python >nul 2>nul
@@ -28,25 +17,11 @@ REM -------------------------------
 echo Installing dependencies...
 pip install -r requirements.txt
 
-REM -------------------------------
-REM Build
-REM -------------------------------
-if "%ONEDIR%"=="1" (
-    echo -------------------------------
-    echo ONEDIR Build - SRC File
-    echo -------------------------------
-    pyinstaller --clean --onedir --name FarbenWolf src/main.py --noconsole
-    REM Erstelle _internal Ordner, falls nicht existiert
-    if not exist dist\FarbenWolf\_internal mkdir dist\FarbenWolf\_internal
-    REM Kopiere den gesamten "resources"-Ordner hinein
-    xcopy /s /e /i /y resources dist\FarbenWolf\_internal\resources >nul
-
-) else (
-    echo -------------------------------
-    echo ONEFILE Build - SPEC File
-    echo -------------------------------
-    pyinstaller --clean FarbenWolf.spec
-)
+echo -------------------------------
+echo ONEFILE Build - SPEC File
+echo -------------------------------
+pyinstaller --clean FarbenWolf.spec
+xcopy /s /e /i /y resources dist\FarbenWolf\_internal\resources >nul
 
 REM -------------------------------
 REM Aufräumen
