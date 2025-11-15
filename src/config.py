@@ -59,8 +59,6 @@ class FWConfig:
         self.save()
         print("Configuration has been reset to default values.")
 
-    # --- Private/Internal methods ---
-
     def get_default_config(self):
         """
         Returns the default configuration dictionary.
@@ -100,12 +98,12 @@ class FWConfig:
 
     def get_config_path(self):
         """
-        Returns the full path to the config.json file inside AppData/Local/FarbenWolf.
+        Returns the full path to the config.json file inside
+        <app_root>/config/.
         Creates the directory if it does not exist.
         """
-        local_appdata = os.getenv("LOCALAPPDATA") or (
-            Path.home() / ".farbenwolf")
-        config_dir = Path(local_appdata) / self.app_name
+        app_root = Path(__file__).resolve().parent
+        config_dir = app_root / "config"
         config_dir.mkdir(parents=True, exist_ok=True)
         return config_dir / self.file_name
 

@@ -38,16 +38,16 @@ install.bat
 pip install -r requirements.txt
 ```
 
-Erstelle die ausführbare Datei mit PyInstaller und der vorhandenen `main.spec`:
+Erstelle die ausführbare Datei mit PyInstaller und der vorhandenen `FarbenWolf.spec`:
 
 ```bash
-python -m PyInstaller --clean main.spec
+python -m PyInstaller --clean FarbenWolf.spec
 ```
 
 <br>
 
 #### Anpassen des Logos
-Um das Logo zu ändern, ersetzen Sie die Dateien `LogoIcon.ico`, `LogoIcon.png` und `LogoTransparent.png` durch eigene Bilder mit identischem Dateinamen.
+Um das Logo zu ändern, ersetzen Sie die Dateien im `_internal/ressources` Ordner `LogoIcon.ico`, `LogoIcon.png` und `LogoTransparent.png` durch eigene Bilder mit identischem Dateinamen.
 
 
 ---
