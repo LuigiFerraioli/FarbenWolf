@@ -10,7 +10,6 @@ Die Anwendung ermöglicht die eigenständige Flächenberechnung auf Grundlage ei
 - Python 3.10
 ### Für die Installation ohne Python
 - Windows-Betriebssystem (für die ausführbare .exe-Version)
----
 
 ## Installation und Nutzung
 
@@ -40,8 +39,6 @@ Erstelle die ausführbare Datei mit PyInstaller und der vorhandenen `FarbenWolf.
 python -m PyInstaller --clean FarbenWolf.spec
 ```
 
-<br>
-
 ## Anpassungen
 
 ### Logo anpassen
@@ -55,7 +52,6 @@ Um das Logo zu ändern, ersetzen Sie im Ordner _internals/resources die folgende
 Nach dem Herunterladen der Anwendung sollten die ausführbare Datei (.exe) und der Ordner _internals im selben Verzeichnis bleiben.
 Es wird daher empfohlen, eine Verknüpfung der .exe-Datei zu erstellen und diese für das Starten der Anwendung zu verwenden, statt die Dateien zu verschieben.
 
-<br>
 
 ## Die Anwendung
 
@@ -72,7 +68,6 @@ Eine grafische Vorschau unterstützt die visuelle Kontrolle der eingegebenen Wer
 - Möglichkeit zur visuelle Darstellung der Flächen zur Plausibilitätskontrolle  
 - Export der Ergebnisse in Excel- und/oder PDF-Format  
 - Re-Import bereits vorhandener Excel-Dateien zur weiteren Bearbeitung
-
 
 ### Einstellungen
 
