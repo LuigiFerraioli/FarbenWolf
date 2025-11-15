@@ -44,86 +44,88 @@ class SurveyTab(QWidget):
         self.combo_flaeche.currentTextChanged.connect(
             self.update_field_availability_for_flaeche)
         self.plotter = FlaechenPlotter()
+        self.is_file_up_to_date = True
 
     def close_plotter(self):
+        """ Closes the plotter window if it is currently open."""
         if hasattr(self, "plotter"):
             self.plotter.close_figure()
 
-    def generate_survey(self):
+    def generate_survey(self, path_to_save=None) -> bool:
         """
-        Generates a survey or document based on the current customer data.
+        Generates a survey or document based on the current customer data and configuration.
 
-        This method processes input data, applies necessary logic,
-        and creates the survey output.
+        Args:
+            path_to_save (str, optional): Folder path where the file should be saved. Defaults to None.
+
+        Returns:
+            bool: True if the survey was successfully generated, False otherwise.
         """
         self.update_ui_from_config()
         customer_data = self.customerbox.get_customer_data()
-        if len(customer_data.get("last_name", "").strip()) < 2:
-            QMessageBox.information(self, "Kundendaten",
-                                    "Der Nachname des Kunden muss angegeben werden (mindestens 3 Zeichen).")
+
+        if not self._validate_customer_data(customer_data):
             return False
+
         customer_data = self.customerbox.get_translated_customer_data()
-        # Check if at least one row with data exists
-        first_row = self.df.iloc[0]
-        wertefelder = ["Länge", "Breite", "Höhe1", "Höhe2"]
+        result_df = self._prepare_dataframe(self.df)
 
-        # Check if at least one of the fields contains a meaningful value
-        # (i.e., not empty, not null, and not equal to "0" or "0.0
-        has_wert = any(
-            pd.notna(first_row[field]) and str(
-                first_row[field]).strip() not in ("", "0", "0.0")
-            for field in wertefelder
-        )
-
-        if not has_wert:
-            QMessageBox.warning(
-                self,
-                "Ungültiger Eintrag",
-                "Mindestens eines der Felder Länge, Breite, Höhe1 oder Höhe2 muss einen Wert enthalten."
-            )
-            return False
-
-        # Remove the empty row
-        result_df = self.df
-        last_row = self.df.iloc[-1]
-        if pd.isna(last_row["Länge"]) or last_row["Länge"] == "" or \
-                pd.isna(last_row["Breite"]) or last_row["Breite"] == "" or \
-                pd.isna(last_row["Höhe1"]) or last_row["Höhe1"] == "" or \
-                pd.isna(last_row["Höhe2"]) or last_row["Höhe2"] == "":
-            result_df = self.df[:-1].copy()
-
-        # Load docutype
         document_type = self.config.get("Ausgabedokument")
-        if document_type == "pdf":
-            pdf_gen = PdfHandler(self.config)
-            pdf_gen.set_customer_data(customer_data)
-            pdf_gen.create_file(
-                result_df, pdf_gen.build_filename(customer_data))
-        elif document_type == "excel":
-            excel_gen = ExcelHandler(self.config)
-            excel_gen.set_customer_data(customer_data)
-            excel_gen.create_file(
-                result_df, excel_gen.build_filename(customer_data))
+        handlers = self._get_handlers(
+            document_type, path_to_save, customer_data)
 
-        elif document_type == "pdf & excel":
-            pdf_gen = PdfHandler(self.config)
-            pdf_gen.set_customer_data(customer_data)
-            pdf_gen.create_file(
-                result_df, pdf_gen.build_filename(customer_data))
-            excel_gen = ExcelHandler(self.config)
-            excel_gen.set_customer_data(customer_data)
-            excel_gen.create_file(
-                result_df, excel_gen.build_filename(customer_data))
+        for handler in handlers:
+            handler.create_file(
+                result_df, handler.build_filename(customer_data))
 
-        QMessageBox.information(self, "Export",
-                                f"Das Ergebnis wurde als {document_type} exportiert.")
+        QMessageBox.information(
+            self, "Export", f"Das Ergebnis wurde als {document_type} exportiert.")
+
+        self.set_save_status(True)
         return True
+
+    def save(self) -> None:
+        """
+        Saves the file using the current configuration and customer data.
+
+        The file is generated and saved to the default or previously configured save path.
+        If no path is set, the method may use a default location or handle path 
+        selection internally.
+
+        Raises:
+            RuntimeError: If the file cannot be saved due to missing configuration or invalid path.
+        """
+        self.generate_survey(path_to_save=None)
+
+    def save_under(self) -> None:
+        """
+        Opens a folder selection dialog and saves the file to the selected folder.
+
+        The user can choose a folder, which will be stored as the save path.
+        After selecting the folder, the file is generated and saved there.
+
+        Raises:
+            RuntimeError: If folder selection is cancelled.
+        """
+        folder_path = QFileDialog.getExistingDirectory(
+            self,
+            "Select Folder to Save File",
+            self.config.get("Speicherort", ".")
+        )
+        if not folder_path:
+            return
+
+        # Generate and save the file
+        self.generate_survey(path_to_save=folder_path)
 
     def import_survey(self):
         """
         Opens a file dialog to select an Excel file and loads it into a DataFrame.
         Also loads customer data if available.
         """
+        if not self.check_save_before_action():
+            return
+
         file_path, _ = QFileDialog.getOpenFileName(
             self,
             "Select Excel File",
@@ -147,9 +149,11 @@ class SurveyTab(QWidget):
                         [self.df, empty_row.to_frame().T], ignore_index=True)
                     self.update_table_area()
                     self.update_pos_items()
+                    self.set_save_status(True)
                 else:
                     QMessageBox.warning(
-                        self, "Error", "Die ausgewählte Datei konnte nicht geladen werden oder ist beschädigt."
+                        self, "Error",
+                        "Die ausgewählte Datei konnte nicht geladen werden oder ist beschädigt."
                     )
 
             except Exception as e:
@@ -160,25 +164,42 @@ class SurveyTab(QWidget):
 
     def new_survey(self):
         """
-        Ask the user if the current survey should be saved before starting a new one.
+        Starts a new survey after optionally saving the current one.
         """
+        if not self.check_save_before_action():
+            return
+
+        self.delete_actual_survey()
+        self.customerbox.clear_inputs()
+        self.set_save_status(True)
+
+    def check_save_before_action(self) -> bool:
+        """
+        Checks if the current file is up to date.
+        If not, asks the user whether to save it before proceeding.
+
+        Returns:
+            bool: True if it is safe to proceed (file saved or user chose not to save),
+                False if the action should be cancelled.
+        """
+        if self.is_file_up_to_date:
+            return True
+
         reply = QMessageBox.question(
             self,
-            "Neues Aufmaß",
-            "Möchten Sie das aktuelle Aufmaß speichern, bevor ein neues erstellt wird?",
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No | QMessageBox.StandardButton.Cancel
+            "Speichern prüfen",
+            "Möchten Sie das aktuelle Aufmaß speichern, bevor Sie fortfahren?",
+            QMessageBox.StandardButton.Yes |
+            QMessageBox.StandardButton.No |
+            QMessageBox.StandardButton.Cancel
         )
 
         if reply == QMessageBox.StandardButton.Yes:
             if self.generate_survey():
-                self.delete_actual_survey()
-                self.customerbox.clear_inputs()
-
+                return True
         elif reply == QMessageBox.StandardButton.No:
-            self.delete_actual_survey()
-            self.customerbox.clear_inputs()
-        else:
-            return
+            return True
+        return False
 
     def handle_add_entry(self):
         """
@@ -235,7 +256,11 @@ class SurveyTab(QWidget):
 
         else:
             # Insert new row before the last empty one, if it exists and is really empty
-            if self.df.iloc[-1].isnull().all() or all(str(v).strip() == "" for v in self.df.iloc[-1]):
+            last_row = self.df.iloc[-1]
+            if (
+                last_row.isnull().all()
+                or all(str(v).strip() == "" for v in last_row)
+            ):
                 self.df.iloc[-1] = new_row
             else:
                 self.df = pd.concat(
@@ -268,6 +293,7 @@ class SurveyTab(QWidget):
                 item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
                 self.table_widget.setItem(row, col, item)
         self.update_pos_items()
+        self.set_save_status(False)
 
     def handle_delete_entry(self):
         """
@@ -454,6 +480,20 @@ class SurveyTab(QWidget):
         self.input_note.clear()
         self.update_field_availability_for_flaeche()
 
+    def set_save_status(self, saved: bool):
+        """
+        Updates the save status icon.
+        Uses system's disabled/enabled look instead of manual alpha manipulation.
+
+        Args:
+            saved (bool): True if the file is up to date, False otherwise.
+        """
+        self.is_file_up_to_date = saved
+        icon = QIcon.fromTheme("document-save")
+        pixmap = icon.pixmap(24, 24)
+        self.save_status_label.setEnabled(saved)
+        self.save_status_label.setPixmap(pixmap)
+
     def _find_existing_pos_index(self, pos_value: str) -> pd.Index:
         """
         Finds the index of the row where 'Pos.' matches the given value,
@@ -626,30 +666,96 @@ class SurveyTab(QWidget):
         layout.addWidget(button)
 
     def _add_button_row(self, layout):
-        """Adds the bottom button row (Import, Generate Survey)."""
+        """Adds the bottom button row (Import, Generate Survey) with a save status icon."""
         button_layout = QHBoxLayout()
         button_layout.addStretch()
 
+        # --- Save Status Icon ---
+        self.save_status_label = QLabel()
+        save_icon = QIcon.fromTheme("document-save")
+        self.save_status_label.setPixmap(
+            save_icon.pixmap(24, 24))
+        button_layout.addWidget(self.save_status_label)
+        button_layout.addSpacing(10)
+
+        # --- Import Button ---
         self.btn_import = QPushButton(" Import")
         self.btn_import.setIcon(QIcon.fromTheme("folder-new"))
         self.btn_import.setFixedWidth(250)
         self.btn_import.clicked.connect(self.import_survey)
 
-        self.btn_gernerate_survey = QPushButton(" Speichern")
-        self.btn_gernerate_survey.setIcon(QIcon.fromTheme("document-save"))
-        self.btn_gernerate_survey.setFixedWidth(250)
-        self.btn_gernerate_survey.clicked.connect(self.generate_survey)
+        # --- Generate Survey Button ---
+        self.btn_generate_survey = QPushButton(" Speichern")
+        self.btn_generate_survey.setIcon(QIcon.fromTheme("document-save"))
+        self.btn_generate_survey.setFixedWidth(250)
+        self.btn_generate_survey.clicked.connect(self.save)
 
+        # --- Save Under Button ---
+        self.btn_generate_survey_save_under = QPushButton(" Speichern unter")
+        self.btn_generate_survey_save_under.setIcon(
+            QIcon.fromTheme("document-save-as"))
+        self.btn_generate_survey_save_under.setFixedWidth(250)
+        self.btn_generate_survey_save_under.clicked.connect(self.save_under)
+
+        # --- New Survey Button ---
         self.btn_new = QPushButton(" Neues Aufmaß")
         self.btn_new.setIcon(QIcon.fromTheme("document-new"))
         self.btn_new.setFixedWidth(250)
         self.btn_new.clicked.connect(self.new_survey)
 
+        # --- Add buttons to layout ---
         button_layout.addWidget(self.btn_import)
         button_layout.addSpacing(1)
-        button_layout.addWidget(self.btn_gernerate_survey)
+        button_layout.addWidget(self.btn_generate_survey)
+        button_layout.addSpacing(1)
+        button_layout.addWidget(self.btn_generate_survey_save_under)
         button_layout.addStretch(1)
         button_layout.addWidget(self.btn_new)
         button_layout.addStretch()
 
         layout.addLayout(button_layout)
+
+    def _validate_customer_data(self, customer_data: dict) -> bool:
+        if len(customer_data.get("last_name", "").strip()) < 2:
+            QMessageBox.information(
+                self, "Kundendaten",
+                "Der Nachname des Kunden muss angegeben werden (mindestens 3 Zeichen)."
+            )
+            return False
+
+        first_row = self.df.iloc[0]
+        wertefelder = ["Länge", "Breite", "Höhe1", "Höhe2"]
+        if not any(pd.notna(first_row[f])
+                   and str(first_row[f]).strip() not in ("", "0", "0.0") for f in wertefelder):
+            QMessageBox.warning(
+                self, "Ungültiger Eintrag",
+                "Mindestens eines der Felder Länge, Breite, Höhe1 oder Höhe2"
+                "muss einen Wert enthalten."
+            )
+            return False
+        return True
+
+    def _prepare_dataframe(self, df):
+        last_row = df.iloc[-1]
+        if any(pd.isna(last_row[f]) or last_row[f] == ""
+               for f in ["Länge", "Breite", "Höhe1", "Höhe2"]):
+            return df[:-1].copy()
+        return df
+
+    def _get_handlers(self, document_type: str, path_to_save: str, customer_data: dict):
+        handlers = []
+
+        if document_type in ("pdf", "pdf & excel"):
+            pdf_handler = PdfHandler(self.config)
+            if path_to_save:
+                pdf_handler.set_save_path(path_to_save)
+            pdf_handler.set_customer_data(customer_data)
+            handlers.append(pdf_handler)
+
+        if document_type in ("excel", "pdf & excel"):
+            excel_handler = ExcelHandler(self.config)
+            if path_to_save:
+                excel_handler.set_save_path(path_to_save)
+            excel_handler.set_customer_data(customer_data)
+            handlers.append(excel_handler)
+        return handlers

@@ -76,7 +76,16 @@ class FarbenWolfGui(QWidget):
         self._init_tab_settings()
 
     def closeEvent(self, event):
+        """
+        Handles the window close event.
+
+        Checks if the survey tab needs saving before closing.
+        Prevents closing if the user cancels the save action.
+        """
         if hasattr(self, "tab_survey"):
+            if not self.tab_survey.check_save_before_action():
+                event.ignore()
+                return
             self.tab_survey.close_plotter()
         event.accept()
 

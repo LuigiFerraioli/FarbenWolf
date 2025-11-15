@@ -5,16 +5,11 @@
 **Farben Wolf** ist eine Python-basierte Desktop-App zur Flächenaufmaß-Erfassung für Maler- und Lackiererbetriebe.
 Die Anwendung ermöglicht die eigenständige Flächenberechnung auf Grundlage eingegebener Maße sowie eine visuelle Darstellung zur Kontrolle und Plausibilitätsprüfung.
 
-Das Programm läuft mit Python 3.10 oder höher und kann unter Windows installiert und als eigenständige ausführbare Datei genutzt werden.
-
----
-
 ## Voraussetzungen
-- Python 3.10 oder höher
-- Windows-Betriebssystem (für die EXE-Version)
-- Internetverbindung zum Installieren der Abhängigkeiten (nur beim Setup)
-
----
+### Für die Entwicklung
+- Python 3.10
+### Für die Installation ohne Python
+- Windows-Betriebssystem (für die ausführbare .exe-Version)
 
 ## Installation und Nutzung
 
@@ -23,10 +18,10 @@ Das Programm läuft mit Python 3.10 oder höher und kann unter Windows installie
 1. Öffne die Eingabeaufforderung (CMD) im Projektverzeichnis.
 2. Führe die Datei `install.bat` aus, indem du den Befehl eingibst:
 
+Erstellt eine Anwendung und einen _internal-Ordner (schnellere Ausführung)
 ```bash
 install.bat
 ```
-
 3. Dies installiert automatisch alle benötigten Python-Pakete.
 
 ### Variante 2: Manuelle Installation
@@ -38,21 +33,25 @@ install.bat
 pip install -r requirements.txt
 ```
 
-Erstelle die ausführbare Datei mit PyInstaller und der vorhandenen `main.spec`:
+Erstelle die ausführbare Datei mit PyInstaller und der vorhandenen `FarbenWolf.spec`:
 
 ```bash
-python -m PyInstaller --clean main.spec
+python -m PyInstaller --clean FarbenWolf.spec
 ```
 
-<br>
+## Anpassungen
 
-#### Anpassen des Logos
-Um das Logo zu ändern, ersetzen Sie die Dateien `LogoIcon.ico`, `LogoIcon.png` und `LogoTransparent.png` durch eigene Bilder mit identischem Dateinamen.
+### Logo anpassen
+Um das Logo zu ändern, ersetzen Sie im Ordner _internals/resources die folgenden Dateien durch eigene Bilder mit identischem Dateinamen:
+- LogoIcon.ico
+- LogoIcon.png
+- LogoTransparent.png
 
+### Verknüpfung erstellen (Empfehlung)
 
----
+Nach dem Herunterladen der Anwendung sollten die ausführbare Datei (.exe) und der Ordner _internals im selben Verzeichnis bleiben.
+Es wird daher empfohlen, eine Verknüpfung der .exe-Datei zu erstellen und diese für das Starten der Anwendung zu verwenden, statt die Dateien zu verschieben.
 
-<br>
 
 ## Die Anwendung
 
@@ -69,7 +68,6 @@ Eine grafische Vorschau unterstützt die visuelle Kontrolle der eingegebenen Wer
 - Möglichkeit zur visuelle Darstellung der Flächen zur Plausibilitätskontrolle  
 - Export der Ergebnisse in Excel- und/oder PDF-Format  
 - Re-Import bereits vorhandener Excel-Dateien zur weiteren Bearbeitung
-
 
 ### Einstellungen
 
