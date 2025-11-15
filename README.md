@@ -5,15 +5,11 @@
 **Farben Wolf** ist eine Python-basierte Desktop-App zur Flächenaufmaß-Erfassung für Maler- und Lackiererbetriebe.
 Die Anwendung ermöglicht die eigenständige Flächenberechnung auf Grundlage eingegebener Maße sowie eine visuelle Darstellung zur Kontrolle und Plausibilitätsprüfung.
 
-Das Programm läuft mit Python 3.10 oder höher und kann unter Windows installiert und als eigenständige ausführbare Datei genutzt werden.
-
----
-
 ## Voraussetzungen
-- Python 3.10 oder höher
-- Windows-Betriebssystem (für die EXE-Version)
-- Internetverbindung zum Installieren der Abhängigkeiten (nur beim Setup)
-
+### Für die Entwicklung
+- Python 3.10
+### Für die Installation ohne Python
+- Windows-Betriebssystem (für die ausführbare .exe-Version)
 ---
 
 ## Installation und Nutzung
@@ -46,11 +42,18 @@ python -m PyInstaller --clean FarbenWolf.spec
 
 <br>
 
-#### Anpassen des Logos
-Um das Logo zu ändern, ersetzen Sie die Dateien im `_internal/ressources` Ordner `LogoIcon.ico`, `LogoIcon.png` und `LogoTransparent.png` durch eigene Bilder mit identischem Dateinamen.
+## Anpassungen
 
+### Logo anpassen
+Um das Logo zu ändern, ersetzen Sie im Ordner _internals/resources die folgenden Dateien durch eigene Bilder mit identischem Dateinamen:
+- LogoIcon.ico
+- LogoIcon.png
+- LogoTransparent.png
 
----
+### Verknüpfung erstellen (Empfehlung)
+
+Nach dem Herunterladen der Anwendung sollten die ausführbare Datei (.exe) und der Ordner _internals im selben Verzeichnis bleiben.
+Es wird daher empfohlen, eine Verknüpfung der .exe-Datei zu erstellen und diese für das Starten der Anwendung zu verwenden, statt die Dateien zu verschieben.
 
 <br>
 
