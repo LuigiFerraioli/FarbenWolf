@@ -32,18 +32,17 @@ jobs:
         run: |
           pyinstaller --clean FarbenWolf.spec
           if (!(Test-Path release)) { New-Item -ItemType Directory -Path release }
-          Push-Location dist\FarbenWolf
-          Compress-Archive -Path FarbenWolf.exe, _internals -DestinationPath ../../release/FarbenWolf.zip
-          Pop-Location
+          Compress-Archive -Path dist\* -DestinationPath release\FarbenWolf.zip
 
       - name: Upload artifact (only on main branch)
-        #if: |
-        #  startsWith(github.ref, 'refs/heads/main') ||
-        #  startsWith(github.ref, 'refs/pull/')
+        if: |
+          startsWith(github.ref, 'refs/heads/main') ||
+          startsWith(github.ref, 'refs/pull/')
         uses: actions/upload-artifact@v4
         with:
-          name: FarbenWolf
+          name: farbenwolf-build
           path: release\FarbenWolf.zip
+
 
   release:
     runs-on: ubuntu-latest
@@ -54,7 +53,7 @@ jobs:
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
-          name: FarbenWolf
+          name: farbenwolf-build
           path: release/
 
       - name: Create GitHub Release
