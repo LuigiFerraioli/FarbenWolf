@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: tobix/pywine:3.13
+      image: tobix/pywine:3.12
 
     steps:
       - name: Checkout code
@@ -40,11 +40,11 @@ jobs:
 
       - name: Install Python requirements via Wine
         run: |
-          $PYWINE -m pip install -Ur requirements.txt --no-warn-script-location
+          $PYWINE -m pip install -r requirements.txt --no-warn-script-location
 
       - name: Build executable (PyInstaller via Wine)
         run: |
-          $PYWINE -m PyInstaller --clean --onefile --noconsole src/main.py
+          $PYWINE -m PyInstaller --clean FarbenWolf.spec
           mkdir -p release
           zip -r release/FarbenWolf.zip dist/
 
