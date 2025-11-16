@@ -44,7 +44,7 @@ jobs:
 
       - name: Build executable (PyInstaller via Wine)
         run: |
-          $PYWINE -m PyInstaller --clean FarbenWolf.spec
+          $PYWINE -m PyInstaller --clean --onefile --noconsole src/main.py
           mkdir -p release
           zip -r release/FarbenWolf.zip dist/
 
