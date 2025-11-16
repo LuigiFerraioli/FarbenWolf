@@ -34,16 +34,11 @@ jobs:
           if (!(Test-Path release)) { New-Item -ItemType Directory -Path release }
           Compress-Archive -Path dist\* -DestinationPath release\FarbenWolf.zip
 
-      - name: Upload artifact (only on main branch)
-        if: |
-          startsWith(github.ref, 'refs/heads/main') ||
-          startsWith(github.ref, 'refs/pull/') ||
-          startsWith(github.ref, 'refs/tags/v')
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: farbenwolf-build
           path: release\FarbenWolf.zip
-
 
   release:
     runs-on: ubuntu-latest
@@ -56,6 +51,9 @@ jobs:
         with:
           name: farbenwolf-build
           path: release/
+
+      - name: List downloaded files
+        run: ls -l release/
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
