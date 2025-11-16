@@ -30,7 +30,7 @@ jobs:
 
       - name: Define PYWINE variable
         run: |
-          echo 'PYWINE=wine /opt/wineprefix/drive_c/Python313/python.exe' >> $GITHUB_ENV
+          echo 'PYWINE=wine /opt/wineprefix/drive_c/Python/python.exe' >> $GITHUB_ENV
 
       - name: Install Python requirements via Wine
         run: |
