@@ -35,9 +35,9 @@ jobs:
           Compress-Archive -Path dist\* -DestinationPath release\FarbenWolf.zip
 
       - name: Upload artifact (only on main branch)
-        #if: |
-        #  startsWith(github.ref, 'refs/heads/main') ||
-        #  startsWith(github.ref, 'refs/pull/')
+        if: |
+          startsWith(github.ref, 'refs/heads/main') ||
+          startsWith(github.ref, 'refs/pull/')
         uses: actions/upload-artifact@v4
         with:
           name: farbenwolf-build
