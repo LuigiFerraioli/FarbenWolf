@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: tobix/pywine:3.10
+      image: tobix/pywine:3.13
 
     steps:
       - name: Checkout code
@@ -23,9 +23,14 @@ jobs:
         run: |
           . /opt/mkuserwineprefix
 
+      - name: Show all Python installations inside Wine
+        run: |
+          echo "Searching for python installations..."
+          find /opt/wineprefix -iname "python.exe" -print
+
       - name: Define PYWINE variable
         run: |
-          echo 'PYWINE=wine /opt/wineprefix/drive_c/Python310/python.exe' >> $GITHUB_ENV
+          echo 'PYWINE=wine /opt/wineprefix/drive_c/Python313/python.exe' >> $GITHUB_ENV
 
       - name: Install Python requirements via Wine
         run: |
