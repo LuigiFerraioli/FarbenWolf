@@ -7,46 +7,32 @@ on:
     tags:
       - 'v*.*.*'
 
+
 jobs:
 
   build:
-    runs-on: ubuntu-latest
-
-    container:
-      image: tobix/pywine:3.12
+    runs-on: windows-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Wine prefix
-        run: |
-          . /opt/mkuserwineprefix
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.12
 
-      - name: Set Wine environment
-        run: |
-          export DISPLAY=:0
-          export XDG_RUNTIME_DIR=/tmp/runtime-$USER
-          mkdir -p $XDG_RUNTIME_DIR
+      - name: Upgrade pip
+        run: python -m pip install --upgrade pip
 
-      - name: Show all Python installations inside Wine
-        run: |
-          echo "Searching for python installations..."
-          find /opt/wineprefix -iname "python.exe" -print
+      - name: Install Python requirements
+        run: pip install -r requirements.txt
 
-      - name: Define PYWINE variable
+      - name: Build executable (PyInstaller)
         run: |
-          echo 'PYWINE=wine /opt/wineprefix/drive_c/Python/python.exe' >> $GITHUB_ENV
-
-      - name: Install Python requirements via Wine
-        run: |
-          $PYWINE -m pip install -r requirements.txt --no-warn-script-location
-
-      - name: Build executable (PyInstaller via Wine)
-        run: |
-          $PYWINE -m PyInstaller --clean FarbenWolf.spec
-          mkdir -p release
-          zip -r release/FarbenWolf.zip dist/
+          pyinstaller --clean FarbenWolf.spec
+          if (!(Test-Path release)) { New-Item -ItemType Directory -Path release }
+          Compress-Archive -Path dist\* -DestinationPath release\FarbenWolf.zip
 
       - name: Upload artifact (only on main branch)
         #if: |
@@ -55,7 +41,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: farbenwolf-build
-          path: release/FarbenWolf.zip
+          path: release\FarbenWolf.zip
 
 
   release:
