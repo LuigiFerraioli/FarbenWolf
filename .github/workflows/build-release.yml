@@ -23,9 +23,18 @@ jobs:
         run: |
           . /opt/mkuserwineprefix
 
+      - name: Show all Python installations inside Wine
+        run: |
+          echo "Searching for python installations..."
+          find /opt/wineprefix -iname "python.exe" -print
+
+      - name: List Wine Prefix structure
+        run: |
+          ls -R /opt/wineprefix/drive_c/
+
       - name: Define PYWINE variable
         run: |
-          echo 'PYWINE=wine /opt/wineprefix/drive_c/Python39/Python.exe' >> $GITHUB_ENV
+          echo 'PYWINE=wine /opt/wineprefix/drive_c/Python/Python.exe' >> $GITHUB_ENV
 
       - name: Install Python requirements via Wine
         run: |
