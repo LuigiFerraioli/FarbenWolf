@@ -21,7 +21,7 @@ Für **Benutzer** steht derzeit **nur der Windows-Build** zur Verfügung.
 ## Benutzerinstallation
 ### Download
 
-🔗 **[FarbenWolf.zip herunterladen](https://github.com/LuigiFerraioli/FarbenWolf/releases/latest/download/FarbenWolf.zip)**
+🔗 **[FarbenWolf-Anwendung herunterladen](https://github.com/LuigiFerraioli/FarbenWolf/releases/latest/download/FarbenWolf.zip)**
 
 Lade die ZIP-Datei herunter und entpacke sie. Danach kannst du die `FarbenWolf.exe` direkt ausführen.
 
@@ -35,7 +35,7 @@ Um das Logo zu ändern, ersetze im Ordner `_internals/resources` die folgenden D
 - `LogoTransparent.png`
 
 
-## Verknüpfung erstellen (Empfehlung)
+### Verknüpfung erstellen (Empfehlung)
 
 Nach dem Herunterladen müssen die ausführbare Datei (`.exe`) und der Ordner `_internals` **im selben Verzeichnis** bleiben.
 
