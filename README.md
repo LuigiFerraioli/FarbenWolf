@@ -1,17 +1,48 @@
 <img src="resources/LogoTransparent.png" alt="Logo" width="400"/>
 
 
-## Übersicht
+# Übersicht
 **Farben Wolf** ist eine Python-basierte Desktop-App zur Flächenaufmaß-Erfassung für Maler- und Lackiererbetriebe.
 Die Anwendung ermöglicht die eigenständige Flächenberechnung auf Grundlage eingegebener Maße sowie eine visuelle Darstellung zur Kontrolle und Plausibilitätsprüfung.
 
-## Voraussetzungen
-### Für die Entwicklung
-- Python 3.10
-### Für die Installation ohne Python
-- Windows-Betriebssystem (für die ausführbare .exe-Version)
+# Installation und Nutzung
+Die App kann entweder von **Entwicklern** zur Erweiterung oder Personalisierung genutzt werden oder von **Benutzern**, die nur die fertige Anwendung installieren möchten.
 
-## Installation und Nutzung
+## Kompatibilität
+Für die **Entwicklung** wird lediglich **Python** benötigt. Das Projekt sollte unter **Windows**, **macOS** und **Linux** laufen.  
+Für **Benutzer** steht derzeit **nur der Windows-Build** zur Verfügung.
+
+| Verwendung      | Voraussetzung               |
+|-----------------|-----------------------------|
+| **Entwicklung** | Python 3.10 – Python 3.12   |
+| **Benutzung**   | Windows 10 oder Windows 11  |
+
+
+## Benutzerinstallation
+### Download
+
+🔗 **[FarbenWolf.zip herunterladen](https://github.com/LuigiFerraioli/FarbenWolf/releases/latest/download/FarbenWolf.zip)**
+
+Lade die ZIP-Datei herunter und entpacke sie. Danach kannst du die `FarbenWolf.exe` direkt ausführen.
+
+## Anpassungen
+### Logo anpassen
+
+Um das Logo zu ändern, ersetze im Ordner `_internals/resources` die folgenden Dateien durch eigene Bilder **mit identischem Dateinamen**:
+
+- `LogoIcon.ico`
+- `LogoIcon.png`
+- `LogoTransparent.png`
+
+
+## Verknüpfung erstellen (Empfehlung)
+
+Nach dem Herunterladen müssen die ausführbare Datei (`.exe`) und der Ordner `_internals` **im selben Verzeichnis** bleiben.
+
+Es wird daher empfohlen, **eine Verknüpfung der .exe** auf den Desktop oder ins Startmenü zu legen, statt Dateien innerhalb des App-Verzeichnisses zu verschieben.
+
+
+## Installation für Entwickler
 
 ### Variante 1: Installation mit install.bat (Windows)
 
@@ -39,30 +70,18 @@ Erstelle die ausführbare Datei mit PyInstaller und der vorhandenen `FarbenWolf.
 python -m PyInstaller --clean FarbenWolf.spec
 ```
 
-## Anpassungen
-
-### Logo anpassen
-Um das Logo zu ändern, ersetzen Sie im Ordner _internals/resources die folgenden Dateien durch eigene Bilder mit identischem Dateinamen:
-- LogoIcon.ico
-- LogoIcon.png
-- LogoTransparent.png
-
-### Verknüpfung erstellen (Empfehlung)
-
-Nach dem Herunterladen der Anwendung sollten die ausführbare Datei (.exe) und der Ordner _internals im selben Verzeichnis bleiben.
-Es wird daher empfohlen, eine Verknüpfung der .exe-Datei zu erstellen und diese für das Starten der Anwendung zu verwenden, statt die Dateien zu verschieben.
-
-
-## Die Anwendung
+# Die Anwendung
 
 ![App Screenshot](resources/FarbenWolfApp.png)
 
 Die Benutzeroberfläche ermöglicht eine intuitive Eingabe von Raummaßen und Flächentypen.  
 Eine grafische Vorschau unterstützt die visuelle Kontrolle der eingegebenen Werte und der resultierenden Flächenaufteilung.
 
-#### Hauptfunktionen:
+### Hauptfunktionen:
 
 - Eingabe und Verwaltung von Kundendaten
+  - Kundenadresse
+  - Objektadresse
 - Auswahl der ausgeführten Arbeit
 - Automatische Flächenberechnung basierend auf der Auswahl der Flächenart  
 - Möglichkeit zur visuelle Darstellung der Flächen zur Plausibilitätskontrolle  
@@ -82,4 +101,3 @@ In den Einstellungen können wichtige Voreinstellungen getroffen werden:
 - Auswahl der automatischen Bereitstellung der PDF nach dem Speichervorgang (Ja/Nein)
 
 Zusätzlich können Arbeiten beliebig hinzugefügt werden. Diese dienen – wie auch die Bemerkungen – als Unterstützung während der Dateneingabe und sind nicht verpflichtend.
-
