@@ -1,7 +1,6 @@
-{{ if .Versions -}}
-<a name="unreleased"></a>
-## [Unreleased]
+# CHANGELOG
 
+{{ if .Versions -}}
 {{ if .Unreleased.CommitGroups -}}
 {{ range .Unreleased.CommitGroups -}}
 ### {{ .Title }}
@@ -33,7 +32,6 @@
 {{ end -}}
 
 {{- if .Versions }}
-[Unreleased]: {{ .Info.RepositoryURL }}/compare/{{ $latest := index .Versions 0 }}{{ $latest.Tag.Name }}...HEAD
 {{ range .Versions -}}
 {{ if .Tag.Previous -}}
 [{{ .Tag.Name }}]: {{ $.Info.RepositoryURL }}/compare/{{ .Tag.Previous.Name }}...{{ .Tag.Name }}
