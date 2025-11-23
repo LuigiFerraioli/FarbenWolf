@@ -28,6 +28,9 @@ options:
     pattern_maps:
       - Type
       - Subject
+  issues:
+    prefix:
+      - #
   notes:
     keywords:
       - BREAKING CHANGE
