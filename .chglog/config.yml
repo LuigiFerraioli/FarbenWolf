@@ -1,0 +1,33 @@
+style: github
+template: CHANGELOG.tpl.md
+info:
+  title: CHANGELOG
+  repository_url: https://github.com/LuigiFerraioli/FarbenWolf
+options:
+  commits:
+    filters:
+       Type:
+         - feat
+         - fix
+         - perf
+         - refactor
+         - ci
+         - docs
+         - style
+  commit_groups:
+     title_maps:
+       feat: Features
+       fix: Bug Fixes
+       perf: Performance Improvements
+       refactor: Code Refactoring
+       ci: Continuous Integration
+       docs: Documentation
+       style: Styles
+  header:
+    pattern: "^(\\w*)\\:\\s(.*)$"
+    pattern_maps:
+      - Type
+      - Subject
+  notes:
+    keywords:
+      - BREAKING CHANGE
