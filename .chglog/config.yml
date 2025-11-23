@@ -11,7 +11,6 @@ options:
          - fix
          - perf
          - refactor
-         - ci
          - docs
          - style
   commit_groups:
@@ -20,7 +19,6 @@ options:
        fix: Bug Fixes
        perf: Performance Improvements
        refactor: Code Refactoring
-       ci: Continuous Integration
        docs: Documentation
        style: Styles
   header:
