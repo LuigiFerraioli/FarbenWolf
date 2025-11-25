@@ -58,27 +58,15 @@ jobs:
           chmod +x git-chglog
           sudo mv git-chglog /usr/local/bin/git-chglog
 
-      - name: Generate CHANGELOG
-        run: |
-          git-chglog ${{ github.ref_name }} > CHANGELOG_NEW.md
-          tail -n +2 CHANGELOG.md > CHANGELOG_OLD.md
-          {
-            echo "# CHANGELOG"
-            echo ""
-            cat CHANGELOG_NEW.md
-            echo ""
-            cat CHANGELOG_OLD.md
-          } > CHANGELOG.md
-
-      - name: Upload CHANGELOG as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: changelog
-          path: CHANGELOG.md
-
       - name: Generate Release Note
         run: |
           git-chglog --template .chglog/RELEASE_NOTE.tpl.md ${{ github.ref_name }} > RELEASE_NOTE.md
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: farbenwolf-build
+          path: release/
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2

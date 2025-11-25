@@ -1,6 +1,14 @@
-# CHANGELOG
+# Changelog
+
+Alle bemerkenswerten Änderungen an diesem Projekt werden in dieser Datei dokumentiert.
+
+Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), erstellt mit [git-chglog](https://github.com/git-chglog) und dieses Projekt hält sich an [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
 
 {{ if .Versions -}}
+<a name="unreleased"></a>
+## [Unreleased]
+
 {{ if .Unreleased.CommitGroups -}}
 {{ range .Unreleased.CommitGroups -}}
 ### {{ .Title }}
@@ -32,6 +40,7 @@
 {{ end -}}
 
 {{- if .Versions }}
+[Unreleased]: {{ .Info.RepositoryURL }}/compare/{{ $latest := index .Versions 0 }}{{ $latest.Tag.Name }}...HEAD
 {{ range .Versions -}}
 {{ if .Tag.Previous -}}
 [{{ .Tag.Name }}]: {{ $.Info.RepositoryURL }}/compare/{{ .Tag.Previous.Name }}...{{ .Tag.Name }}
