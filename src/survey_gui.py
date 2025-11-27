@@ -31,7 +31,6 @@ class FarbenWolfGui(QWidget):
     def __init__(self):
         super().__init__()
         self.config = FWConfig()
-        self.setWindowTitle("FarbenWolf Survey")
 
         # set primaryScreen max Windowmode
         screen = QApplication.primaryScreen()

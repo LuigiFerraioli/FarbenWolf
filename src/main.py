@@ -6,6 +6,7 @@ Copyright: © 2025 Luigi Ferraioli
 import sys
 from PyQt6.QtWidgets import QApplication
 from survey_gui import FarbenWolfGui
+from version import __version__
 
 
 def main():
@@ -17,6 +18,7 @@ def main():
     """
     app = QApplication(sys.argv)
     window = FarbenWolfGui()
+    window.setWindowTitle(f"FarbenWolf Survey {__version__}")
     window.show()
     sys.exit(app.exec())
 
