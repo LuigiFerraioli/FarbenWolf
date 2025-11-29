@@ -6,7 +6,7 @@ Copyright: © 2025 Luigi Ferraioli
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QPushButton, QMessageBox, QHBoxLayout,
     QTextEdit, QComboBox, QLineEdit, QLabel, QTableWidget,
-    QTableWidgetItem, QHeaderView, QScrollArea, QSizePolicy, QFileDialog)
+    QTableWidgetItem, QHeaderView, QAbstractItemView, QSizePolicy, QFileDialog)
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon
@@ -34,9 +34,7 @@ class SurveyTab(QWidget):
 
         self.df = pd.DataFrame(
             [[""] * len(self.table_columns)], columns=self.table_columns)
-        self.table_widget = QTableWidget()
-        self.table_widget.setColumnCount(len(self.table_columns))
-        self.table_widget.setHorizontalHeaderLabels(self.table_columns)
+        self.table_widget = None
 
         self._init_ui()
         self.update_field_availability_for_flaeche()
@@ -565,6 +563,8 @@ class SurveyTab(QWidget):
         self.table_widget = QTableWidget()
         self.table_widget.setColumnCount(len(self.table_columns))
         self.table_widget.setHorizontalHeaderLabels(self.table_columns)
+        self.table_widget.setEditTriggers(
+            QAbstractItemView.EditTrigger.NoEditTriggers)
 
         header = self.table_widget.horizontalHeader()
         resize_modes = [50, 50, 100, 100, 100, 100, 400,
