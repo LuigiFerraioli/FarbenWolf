@@ -5,13 +5,13 @@ Copyright: © 2025 Luigi Ferraioli
 
 from pathlib import Path
 
-from PyQt6.QtWidgets import (
+from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,
     QPushButton, QListWidget, QListWidgetItem, QComboBox,
     QFileDialog, QMessageBox, QCheckBox
 )
 
-from PyQt6.QtGui import QIcon
+from PySide6.QtGui import QIcon
 
 
 class SettingsTab(QWidget):
