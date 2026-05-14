@@ -3,13 +3,13 @@ Author: Luigi Ferraioli
 Copyright: © 2025 Luigi Ferraioli
 """
 
-from PyQt6.QtWidgets import (
+from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QPushButton, QMessageBox, QHBoxLayout,
     QTextEdit, QComboBox, QLineEdit, QLabel, QTableWidget,
     QTableWidgetItem, QHeaderView, QAbstractItemView, QSizePolicy, QFileDialog)
 
-from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QIcon
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QIcon
 
 import pandas as pd
 import re

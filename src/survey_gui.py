@@ -5,11 +5,11 @@ Copyright: © 2025 Luigi Ferraioli
 
 import os
 
-from PyQt6.QtWidgets import (
+from PySide6.QtWidgets import (
     QWidget, QTabWidget, QVBoxLayout, QLabel, QApplication)
 
-from PyQt6.QtCore import Qt, QRect
-from PyQt6.QtGui import QPixmap, QIcon
+from PySide6.QtCore import Qt, QRect
+from PySide6.QtGui import QPixmap, QIcon
 
 from config import FWConfig
 from settings_tab import SettingsTab

@@ -3,11 +3,11 @@ Author: Luigi Ferraioli
 Copyright: © 2025 Luigi Ferraioli
 """
 
-from PyQt6.QtWidgets import (
+from PySide6.QtWidgets import (
     QGroupBox, QVBoxLayout, QHBoxLayout,
     QLabel, QLineEdit, QComboBox, QSizePolicy, QPushButton
 )
-from PyQt6.QtGui import QIcon
+from PySide6.QtGui import QIcon
 
 import math
 

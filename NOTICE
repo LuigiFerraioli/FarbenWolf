@@ -1,0 +1,5 @@
+This project includes third-party software:
+
+- PySide6 (LGPLv3)
+
+See THIRD_PARTY_LICENSES/ for details.

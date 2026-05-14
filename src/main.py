@@ -4,7 +4,7 @@ Copyright: © 2025 Luigi Ferraioli
 """
 
 import sys
-from PyQt6.QtWidgets import QApplication
+from PySide6.QtWidgets import QApplication
 from survey_gui import FarbenWolfGui
 from version import __version__
 

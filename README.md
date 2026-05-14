@@ -17,6 +17,11 @@ Für **Benutzer** steht derzeit **nur der Windows-Build** zur Verfügung.
 | **Entwicklung** | Python 3.10 – Python 3.12   |
 | **Benutzung**   | Windows 10 oder Windows 11  |
 
+## Abhängigkeiten
+
+Dieses Projekt verwendet PySide6 (Qt for Python), lizenziert unter der LGPLv3.
+
+Qt/PySide6 werden unter den Bedingungen der LGPLv3 verwendet.
 
 ## Benutzerinstallation
 ### Download
